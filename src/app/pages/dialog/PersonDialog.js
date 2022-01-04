@@ -3,6 +3,11 @@ import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import React, { useEffect, useRef } from 'react';
 import PersonService from '../../../api/PersonService';
+import { object, string } from 'yup';
+
+const VALIDATION = object().shape({
+  name: string().required('Required'),
+});
 
 const INITIAL_VALUES = {
   id: undefined,
@@ -59,6 +64,7 @@ export default function PersonDialog(props) {
       maxWidth="sm"
       scroll="paper">
       <Formik initialValues={INITIAL_VALUES}
+        validationSchema={VALIDATION}
         onSubmit={handleSubmit}
         innerRef={formikRef}>
         {(formik) => (

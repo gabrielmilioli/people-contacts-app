@@ -1,5 +1,5 @@
 import { Check, Delete } from '@mui/icons-material';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Fab, FormControl, FormControlLabel, FormLabel, IconButton, List, ListItem, ListItemButton, ListItemText, Radio, RadioGroup } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Fab, FormControl, FormControlLabel, FormLabel, IconButton, List, ListItem, ListItemButton, ListItemText, Radio, RadioGroup, Tooltip, Typography } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import React, { useEffect, useRef, useState } from 'react';
@@ -137,17 +137,20 @@ export default function ContactDialog(props) {
                 fullWidth
                 style={{ maxWidth: 'calc(100% - 64px)' }}
               />
-              <Fab color="secondary" aria-label="add"
-                type="submit"
-                style={{ marginLeft: 8 }}>
-                <Check />
-              </Fab>
+
+              <Tooltip title="Add">
+                <Fab color="secondary" aria-label="add"
+                  type="submit"
+                  style={{ marginLeft: 8 }}>
+                  <Check />
+                </Fab>
+              </Tooltip>
 
               <br /><br />
 
               <Divider />
 
-              {items.length &&
+              {items.length > 0 &&
                 <List sx={{ width: '100%' }}>
                   {items.map((item) => {
                     return (
@@ -155,20 +158,31 @@ export default function ContactDialog(props) {
                         <ListItem
                           dense
                           secondaryAction={
-                            <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(item)}>
-                              <Delete />
-                            </IconButton>
+                            <Tooltip title="Delete">
+                              <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(item)}>
+                                <Delete />
+                              </IconButton>
+                            </Tooltip>
                           }
                         >
-                          <ListItemButton onClick={() => handleEdit(item)}>
-                            <ListItemText primary={item.value} secondary={getDescription(item.type)} />
-                          </ListItemButton>
+
+                          <Tooltip title="Edit">
+                            <ListItemButton onClick={() => handleEdit(item)}>
+                              <ListItemText primary={item.value} secondary={getDescription(item.type)} />
+                            </ListItemButton>
+                          </Tooltip>
                         </ListItem>
                         <Divider />
                       </div>
                     );
                   })}
                 </List>
+              }
+
+              {!items.length &&
+                <Typography component="p" m={2} style={{ width: '100%', textAlign: 'center' }}>
+                  No items found
+                </Typography>
               }
 
             </DialogContent>

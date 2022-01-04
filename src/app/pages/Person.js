@@ -1,5 +1,5 @@
 import { Add, Delete, PersonAdd } from "@mui/icons-material";
-import { CircularProgress, Divider, Fab, IconButton, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
+import { CircularProgress, Divider, Fab, IconButton, List, ListItem, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import PersonService from '../../api/PersonService';
 import ContactDialog from "./dialog/ContactDialog";
@@ -74,48 +74,58 @@ export default function Person() {
       <Divider />
 
       {loading && <CircularProgress />}
-      {(!loading && items.length) &&
+      {(!loading && items.length > 0) &&
         <>
           <List sx={{ width: '100%', maxWidth: 560, margin: 'auto' }}>
             {items.map((item) => {
               return (
                 <div key={item.id}>
                   <ListItem
+                    style={{ paddingRight: '100px' }}
                     secondaryAction={
-                      <>
-                      <IconButton edge="end" aria-label="edit" onClick={() => handleOpenContacts(item)}>
-                        <PersonAdd />
-                      </IconButton>
-                      <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(item)}>
-                        <Delete />
-                      </IconButton>
-                      </>
+                      <div style={{ width: '80px' }}>
+                        <Tooltip title="Contacts">
+                          <IconButton edge="end" aria-label="edit" onClick={() => handleOpenContacts(item)}>
+                            <PersonAdd />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(item)} style={{ float: 'right' }}>
+                            <Delete />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     }
                   >
-                    <ListItemButton onClick={() => handleOpen(item)}>
-                      <ListItemText primary={item.name} />
-                    </ListItemButton>
+                    <Tooltip title="Edit">
+                      <ListItemButton onClick={() => handleOpen(item)}>
+                        <ListItemText primary={item.name} />
+                      </ListItemButton>
+                    </Tooltip>
                   </ListItem>
                   <Divider />
                 </div>
               );
             })}
           </List>
-
-          <Fab className="floatButton" color="primary" aria-label="add" onClick={() => handleOpen()}>
-            <Add />
-          </Fab>
-
-          <PersonDialog onClose={handleClose} open={open} itemToEdit={itemToEdit} />
-          
-          <ContactDialog onClose={handleCloseContacts} open={openContacts} itemToEdit={itemToEdit} />
         </>
       }
+
       {(!loading && !items.length) &&
-        <Typography variant="body" m={2} style={{ width: '100%', margin: 'auto' }}>
+        <Typography component="p" m={2} style={{ width: '100%', textAlign: 'center' }}>
           No items found
         </Typography>
       }
+
+      <Tooltip title="Add">
+        <Fab className="floatButton" color="primary" aria-label="add" onClick={() => handleOpen()}>
+          <Add />
+        </Fab>
+      </Tooltip>
+
+      <PersonDialog onClose={handleClose} open={open} itemToEdit={itemToEdit} />
+
+      <ContactDialog onClose={handleCloseContacts} open={openContacts} itemToEdit={itemToEdit} />
 
     </div>
   );
